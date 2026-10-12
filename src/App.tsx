@@ -1,5 +1,5 @@
 import { ScrollSequence } from "./components/ScrollSequence";
-import { Contact, Faq, Footer, Services } from "./components/Sections";
+import { Contact, Faq, Footer, Promises, Services } from "./components/Sections";
 import { business } from "./content";
 
 export default function App() {
@@ -12,6 +12,7 @@ export default function App() {
         <span className="nav__brand">{business.name}</span>
         <nav aria-label="Primary">
           <a href="#services">Services</a>
+          <a href="#promises">Promises</a>
           <a href="#faq">FAQ</a>
           <a href="#contact">Contact</a>
           <a className="nav__call" href={business.phoneHref}>
@@ -22,6 +23,7 @@ export default function App() {
       <main>
         <ScrollSequence />
         <Services />
+        <Promises />
         <Faq />
         <Contact />
       </main>

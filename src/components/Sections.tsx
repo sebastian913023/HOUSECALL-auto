@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { business, estimateFormEndpoint, faq, repairs, services } from "../content";
+import {
+  business,
+  estimateFormEndpoint,
+  faq,
+  promises,
+  repairs,
+  services,
+  warrantyTerms,
+} from "../content";
 
 export function Services() {
   return (
@@ -25,6 +33,47 @@ export function Services() {
             <li key={r}>{r}</li>
           ))}
         </ul>
+      </div>
+    </section>
+  );
+}
+
+export function Promises() {
+  return (
+    <section id="promises" className="section section--alt" aria-labelledby="promises-h">
+      <div className="wrap">
+        <h2 id="promises-h" className="section__title">
+          Our promises
+        </h2>
+        <div className="promises">
+          {promises.map((p) => (
+            <article key={p.title} className="promise">
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </article>
+          ))}
+        </div>
+        <details className="terms">
+          <summary>Full warranty terms</summary>
+          <h4>What is covered</h4>
+          <p>{warrantyTerms.covered}</p>
+          <h4>Who is covered</h4>
+          <p>{warrantyTerms.who}</p>
+          <h4>How to make a claim</h4>
+          <p>{warrantyTerms.claim}</p>
+          <h4>What is not covered</h4>
+          <ul>
+            {warrantyTerms.excluded.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+          <h4>Limits on our liability</h4>
+          <p>{warrantyTerms.liability}</p>
+          <h4>Payment</h4>
+          <p>{warrantyTerms.payment}</p>
+          <h4>Declined work</h4>
+          <p>{warrantyTerms.declined}</p>
+        </details>
       </div>
     </section>
   );

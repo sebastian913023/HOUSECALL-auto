@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const MAX_DPR = 2;
 const CONCURRENCY = 6;
+const HANDOFF_START = 0.9; // scroll progress where the footage starts dimming out
 
 export function ScrollSequence() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -19,6 +20,7 @@ export function ScrollSequence() {
     if (!section || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    const poster = section.querySelector<HTMLImageElement>(".seq__poster");
 
     const total = sequence.frameCount;
     const frames: (HTMLImageElement | null)[] = new Array(total).fill(null);
@@ -90,19 +92,32 @@ export function ScrollSequence() {
           onUpdate: (self) => {
             targetIndex = Math.min(total - 1, Math.round(self.progress * (total - 1)));
             requestAnimationFrame(draw);
+            const p = self.progress;
+            const fade = 0.04;
             beats.forEach((b, n) => {
               const el = beatRefs.current[n];
               if (!el) return;
-              const p = self.progress;
-              const fade = 0.04;
+              // The first beat is visible from the very top and the last beat
+              // holds to the end, so the hero is never left without a headline.
+              const isFirst = n === 0;
+              const isLast = n === beats.length - 1;
               let o = 0;
-              if (p >= b.at && p <= b.to) {
-                o = Math.min(1, (p - b.at) / fade, (b.to - p) / fade);
-                o = Math.max(0, o);
+              const inStart = isFirst ? -Infinity : b.at;
+              const inEnd = isLast ? Infinity : b.to;
+              if (p >= inStart && p <= inEnd) {
+                const fadeIn = isFirst ? 1 : (p - b.at) / fade;
+                const fadeOut = isLast ? 1 : (b.to - p) / fade;
+                o = Math.max(0, Math.min(1, fadeIn, fadeOut));
               }
               el.style.opacity = String(o);
               el.style.transform = `translateY(${(1 - o) * 14}px)`;
             });
+            // Hand-off: dim the footage over the last stretch so the hero
+            // settles into the page background instead of cutting.
+            const t = Math.max(0, Math.min(1, (p - HANDOFF_START) / (1 - HANDOFF_START)));
+            const dim = String(1 - 0.65 * t * t * (3 - 2 * t));
+            canvas.style.opacity = dim;
+            if (poster) poster.style.opacity = dim;
           },
         });
         // Initial state for reload mid-page.

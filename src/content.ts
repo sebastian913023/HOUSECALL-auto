@@ -64,6 +64,42 @@ export const repairs = [
   "A/C recharge",
 ];
 
+// Promises. Legal wording: have a local attorney or insurer review before launch.
+// The price-match minimum rate is deliberately NOT published.
+export const promises = [
+  {
+    title: "12-month / 12,000-mile labor warranty",
+    body: "If our workmanship fails within 12 months or 12,000 miles, whichever comes first, we redo the work with no charge for labor. Parts carry the manufacturer's warranty. Excludes misuse, accidents, and wear items.",
+  },
+  {
+    title: "Local price match",
+    body: "Bring a written, itemized quote from a licensed shop in the Duluth–Superior area for the same job, same vehicle and same quality of parts, dated within the last 30 days. We'll match the labor charge, subject to our minimum rate. Parts and diagnostic fees are not included.",
+  },
+];
+
+export const warrantyTerms = {
+  covered:
+    "Defects in our workmanship on the repair listed on your invoice. If it fails within 12 months or 12,000 miles of the repair date, whichever comes first, we redo the work with no charge for labor. Parts carry the manufacturer's warranty only.",
+  who: "The original customer and vehicle on the invoice. The warranty does not transfer.",
+  claim:
+    "Contact us within 7 days of noticing the problem, and stop driving the vehicle if it is unsafe. Keep your invoice. We may inspect the vehicle and any failed part before redoing the work. Repairs by anyone else on the same system void the warranty on that system.",
+  excluded: [
+    "Failure of any part or system we did not repair, including anything that fails because of another worn or damaged component",
+    "Conditions that existed before our work, or that we told you about and you declined to fix",
+    "Damage from accidents, collisions, weather, road hazards, or misuse",
+    "Damage from overheating, low fluids, or ignoring warning lights",
+    "Vehicles used for commercial work, ride-share, towing, or racing",
+    "Modified vehicles and aftermarket parts",
+    "Normal wear items, such as brake pads, wipers, belts, and tires, once past ordinary wear",
+    "Fluids, unless the failure is caused by our workmanship",
+  ],
+  liability:
+    "Our remedy is redoing the work or refunding the labor charge for that repair. We are not responsible for towing, rental cars, lost time or wages, or other indirect costs, to the extent the law allows. This does not limit liability for personal injury or anything the law does not let us limit.",
+  payment: "The warranty applies once the invoice is paid in full.",
+  declined:
+    "If we recommend a repair and you decline it, we will note it on your invoice. We are not responsible for failures related to repairs you declined.",
+};
+
 export const faq = [
   {
     q: "Do you really come to my home or work?",
