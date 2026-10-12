@@ -120,6 +120,42 @@ export const faq = [
   },
 ];
 
-// Estimate form: NOT connected. The button shows an honest status instead of
-// a fake success. Wire a real endpoint in src/components/Contact.tsx.
-export const estimateFormEndpoint: string | null = null;
+// Estimator (rules-based, runs in the browser, no server, no AI).
+// - `fixed` = a price you already post publicly (matches `services` above).
+// - `hours` = [low, high] shop labor hours. Labor range = rate x hours.
+// TODO(Sab): set `rate` (your PUBLIC hourly rate; never the minimum) and `hours`
+// per job. While either is null, the page shows NO number for that job and
+// tells the customer you will text a price. Nothing here is invented.
+export type EstimatorJob = {
+  id: string;
+  name: string;
+  keywords: string[]; // word-start matches against the customer's text
+  fixed?: string;
+  hours: [number, number] | null;
+};
+
+export const estimator: { rate: number | null; jobs: EstimatorJob[] } = {
+  rate: null,
+  jobs: [
+    { id: "jump", name: "Jump start", keywords: ["jump", "dead battery", "battery dead", "battery is dead", "battery died"], fixed: "$49", hours: null },
+    { id: "lockout", name: "Lockout", keywords: ["locked out", "lockout", "keys in"], fixed: "$59", hours: null },
+    { id: "flat", name: "Flat tire swap", keywords: ["flat tire", "flat"], fixed: "$59", hours: null },
+    { id: "fuel", name: "Fuel delivery", keywords: ["out of gas", "out of fuel", "empty tank"], fixed: "$45 + fuel", hours: null },
+    { id: "battery", name: "Battery replacement", keywords: ["new battery", "battery replacement", "dead battery"], fixed: "$120–$200", hours: null },
+    { id: "brakes", name: "Brakes", keywords: ["brak", "pads", "caliper"], hours: null },
+    { id: "rotors", name: "Rotors", keywords: ["rotor", "pulsat", "warp"], hours: null },
+    { id: "starter", name: "Starter", keywords: ["starter", "no crank", "crank"], hours: null },
+    { id: "alternator", name: "Alternator", keywords: ["alternator", "battery light", "not charging"], hours: null },
+    { id: "power-steering", name: "Power steering", keywords: ["power steering", "steering pump", "steering fluid"], hours: null },
+    { id: "rack", name: "Rack and pinion", keywords: ["rack", "pinion", "steering leak"], hours: null },
+    { id: "tie-rod", name: "Tie rod end", keywords: ["tie rod"], hours: null },
+    { id: "head-gasket", name: "Head gasket", keywords: ["head gasket", "white smoke", "coolant in oil", "milky"], hours: null },
+    { id: "valve-cover", name: "Valve cover gasket", keywords: ["valve cover", "oil leak"], hours: null },
+    { id: "exhaust", name: "Exhaust", keywords: ["exhaust", "muffler", "catalytic"], hours: null },
+    { id: "transmission", name: "Transmission", keywords: ["transmission", "slipping", "shift"], hours: null },
+    { id: "oil", name: "Oil change", keywords: ["oil change"], hours: null },
+    { id: "belts", name: "Belts", keywords: ["belt", "squeal"], hours: null },
+    { id: "ac", name: "A/C recharge", keywords: ["a c", "air condition", "not cold"], hours: null },
+    { id: "diagnosis", name: "Diagnosis", keywords: ["check engine", "won t start", "knock", "warning light", "smell", "overheat"], hours: null },
+  ],
+};

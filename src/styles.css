@@ -114,6 +114,12 @@ a { color: var(--accent); }
   border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-height: 48px;
 }
 .form__status { min-height: 1.5em; color: var(--accent); margin: 0; }
+.estimate { margin-top: 24px; }
+.estimate:empty { display: none; }
+.estimate__h { margin: 0 0 10px; font-size: var(--step-1); }
+.estimate__rates { margin: 16px 0; }
+.estimate__line { margin: 16px 0; font-size: var(--step-1); }
+.estimate__fine { font-size: .9rem; }
 
 .promises { display: grid; gap: 20px; grid-template-columns: 1fr; margin: 32px 0 0; }
 @media (min-width: 760px) { .promises { grid-template-columns: 1fr 1fr; } }

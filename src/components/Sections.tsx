@@ -1,13 +1,14 @@
 import { useState } from "react";
 import {
   business,
-  estimateFormEndpoint,
   faq,
   promises,
   repairs,
   services,
   warrantyTerms,
 } from "../content";
+import { laborRange, matchJobs, smsLink } from "../estimate";
+import type { EstimatorJob } from "../content";
 
 export function Services() {
   return (
@@ -98,28 +99,36 @@ export function Faq() {
 }
 
 export function Contact() {
-  const [status, setStatus] = useState<string>("");
+  const [vehicle, setVehicle] = useState("");
+  const [issue, setIssue] = useState("");
+  const [result, setResult] = useState<{ jobs: EstimatorJob[]; issue: string; vehicle: string } | null>(null);
+  const [error, setError] = useState("");
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!estimateFormEndpoint) {
-      setStatus(
-        "This form is not connected yet, so nothing was sent. Please call or text instead."
-      );
+    if (issue.trim().length < 3) {
+      setError("Tell us what the car is doing first.");
+      setResult(null);
       return;
     }
-    // Wire a real endpoint via estimateFormEndpoint in src/content.ts.
+    setError("");
+    setResult({ jobs: matchJobs(issue), issue, vehicle });
   };
+
+  const fixed = result?.jobs.filter((j) => j.fixed) ?? [];
+  const labor = result?.jobs.filter((j) => !j.fixed) ?? [];
+  const range = result ? laborRange(result.jobs) : null;
 
   return (
     <section id="contact" className="section" aria-labelledby="contact-h">
       <div className="wrap wrap--split">
         <div>
           <h2 id="contact-h" className="section__title">
-            Get a price before we roll
+            Get a rough price before we roll
           </h2>
           <p className="section__lede">
-            Serving {business.area}. Call or text for the fastest answer.
+            Tell us what the car is doing. You get a rough idea right away, and the real price in
+            writing before any work starts. Serving {business.area}.
           </p>
           <p>
             <a className="btn btn--primary" href={business.phoneHref}>
@@ -133,26 +142,96 @@ export function Contact() {
             Email: <a href={`mailto:${business.email}`}>{business.email}</a>
           </p>
         </div>
-        <form className="form" onSubmit={onSubmit} noValidate>
-          <label>
-            Name
-            <input name="name" autoComplete="name" required />
-          </label>
-          <label>
-            Phone
-            <input name="phone" type="tel" autoComplete="tel" required />
-          </label>
-          <label>
-            What is the car doing?
-            <textarea name="issue" rows={4} />
-          </label>
-          <button className="btn btn--primary" type="submit">
-            Request an estimate
-          </button>
-          <p role="status" className="form__status">
-            {status}
-          </p>
-        </form>
+        <div>
+          <form className="form" onSubmit={onSubmit} noValidate>
+            <label>
+              Year, make, model
+              <input
+                name="vehicle"
+                value={vehicle}
+                onChange={(e) => setVehicle(e.target.value)}
+                placeholder="2014 Honda Accord"
+                autoComplete="off"
+              />
+            </label>
+            <label>
+              What is the car doing?
+              <textarea
+                name="issue"
+                rows={4}
+                value={issue}
+                onChange={(e) => setIssue(e.target.value)}
+                placeholder="Grinding noise when I brake, worse in the cold"
+                aria-describedby="issue-err"
+                maxLength={600}
+              />
+            </label>
+            <p id="issue-err" role="alert" className="form__status">
+              {error}
+            </p>
+            <button className="btn btn--primary" type="submit">
+              Get a rough estimate
+            </button>
+          </form>
+
+          <div className="estimate" aria-live="polite">
+            {result && (
+              <>
+                {result.jobs.length > 0 ? (
+                  <>
+                    <h3 className="estimate__h">Sounds like</h3>
+                    <ul className="chips">
+                      {result.jobs.map((j) => (
+                        <li key={j.id}>{j.name}</li>
+                      ))}
+                    </ul>
+                    {fixed.length > 0 && (
+                      <ul className="rates estimate__rates">
+                        {fixed.map((j) => (
+                          <li key={j.id} className="rates__row">
+                            <span>{j.name}</span>
+                            <strong>{j.fixed}</strong>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {labor.length > 0 &&
+                      (range ? (
+                        <p className="estimate__line">
+                          Labor: <strong>${range[0]}–${range[1]}</strong>. Parts are extra and quoted
+                          separately.
+                        </p>
+                      ) : (
+                        <p className="estimate__line">
+                          We will text you a price for this one. It depends on your vehicle.
+                        </p>
+                      ))}
+                  </>
+                ) : (
+                  <p className="estimate__line">
+                    Not sure from that description, which is normal. Send it over and you will get a
+                    straight answer.
+                  </p>
+                )}
+                <p className="muted estimate__fine">
+                  A rough guide from your description, not a diagnosis or a quote. The firm price is
+                  given in writing before any work starts.
+                </p>
+                <p>
+                  <a
+                    className="btn btn--primary"
+                    href={smsLink(result.vehicle, result.issue, result.jobs)}
+                  >
+                    Text this to Sebastian
+                  </a>{" "}
+                  <a className="btn" href={business.phoneHref}>
+                    Call instead
+                  </a>
+                </p>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
