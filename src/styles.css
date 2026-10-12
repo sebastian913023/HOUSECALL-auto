@@ -1,0 +1,120 @@
+/* Palette and type scale: edit tokens here. */
+:root {
+  --bg: #14120f;
+  --bg-alt: #1b1814;
+  --ink: #f4efe8;
+  --muted: #b9b0a3;
+  --accent: #ff7a2f;
+  --accent-ink: #1a0f06;
+  --line: #3a342c;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.8vw, 1.6rem);
+  --step-2: clamp(1.8rem, 1.3rem + 2.4vw, 3.2rem);
+  --step-3: clamp(2.2rem, 1.2rem + 5vw, 5rem);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.55;
+}
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.skip { position: absolute; left: -999px; top: 0; background: var(--accent); color: var(--accent-ink); padding: 12px 16px; z-index: 100; }
+.skip:focus { left: 8px; top: 8px; }
+
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 12px 20px;
+  background: linear-gradient(to bottom, rgba(20,18,15,.9), rgba(20,18,15,0));
+}
+.nav__brand { font-weight: 700; letter-spacing: .02em; }
+.nav nav { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.nav nav a { color: var(--ink); text-decoration: none; padding: 12px 10px; min-height: 44px; display: inline-flex; align-items: center; }
+.nav .nav__call { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 10px 16px; font-weight: 700; }
+@media (max-width: 640px) {
+  .nav__brand { font-size: .95rem; max-width: 9rem; line-height: 1.15; }
+  .nav nav a:not(.nav__call) { display: none; }
+}
+
+/* Scroll sequence: normal page scroll + bounded sticky scene. */
+.seq { position: relative; height: var(--seq-length, 380vh); }
+.seq__pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.seq__poster, .seq__canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.seq__canvas { z-index: 1; pointer-events: none; }
+.seq__poster { z-index: 0; }
+.seq__shade {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(to top, rgba(20,18,15,.92) 0%, rgba(20,18,15,.45) 45%, rgba(20,18,15,.1) 100%);
+}
+.seq__copy {
+  position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
+  padding: 0 clamp(20px, 5vw, 72px) clamp(28px, 6vh, 64px);
+  max-width: 62rem;
+}
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* Reserved box so beats never collide with the buttons below. */
+.beats { position: relative; height: clamp(230px, 38vh, 340px); margin-bottom: 20px; }
+.beat { position: absolute; left: 0; right: 0; bottom: 0; will-change: opacity, transform; }
+.beat__kicker { margin: 0 0 8px; color: var(--accent); text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; font-weight: 700; }
+.beat__title { margin: 0 0 10px; font-size: var(--step-3); line-height: 1.02; max-width: 16ch; }
+.beat__body { margin: 0; color: var(--muted); font-size: var(--step-1); max-width: 40ch; text-wrap: balance; }
+.seq__cta { display: flex; gap: 12px; flex-wrap: wrap; position: relative; margin-top: 0; padding-top: 0; }
+.seq__flag { position: absolute; z-index: 4; top: 84px; left: 20px; margin: 0; font-size: .72rem; color: var(--muted); border: 1px dashed var(--line); padding: 4px 8px; border-radius: 6px; background: rgba(20,18,15,.7); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 12px 22px; border-radius: 999px;
+  border: 2px solid var(--ink); color: var(--ink); background: transparent;
+  font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.section { padding: clamp(64px, 12vw, 140px) 0; }
+.section--alt { background: var(--bg-alt); }
+.wrap { width: min(100% - 40px, 72rem); margin-inline: auto; }
+.wrap--narrow { max-width: 46rem; }
+.wrap--split { display: grid; gap: 48px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .wrap--split { grid-template-columns: 1fr 1fr; } }
+.section__title { font-size: var(--step-2); line-height: 1.05; margin: 0 0 14px; max-width: 18ch; }
+.section__sub { font-size: var(--step-1); margin: 48px 0 14px; }
+.section__lede { color: var(--muted); max-width: 52ch; margin: 0 0 32px; }
+.muted { color: var(--muted); }
+
+.rates { list-style: none; padding: 0; margin: 0; max-width: 40rem; border-top: 1px solid var(--line); }
+.rates__row { display: flex; justify-content: space-between; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); font-size: var(--step-1); }
+.rates__row strong { color: var(--accent); }
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; }
+.chips li { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; }
+
+.faq { border-bottom: 1px solid var(--line); padding: 4px 0; }
+.faq summary { cursor: pointer; padding: 16px 0; font-weight: 700; min-height: 48px; }
+.faq p { margin: 0 0 16px; color: var(--muted); }
+
+.form { display: grid; gap: 16px; }
+.form label { display: grid; gap: 6px; font-weight: 600; }
+.form input, .form textarea {
+  font: inherit; color: var(--ink); background: var(--bg-alt);
+  border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-height: 48px;
+}
+.form__status { min-height: 1.5em; color: var(--accent); margin: 0; }
+
+.footer { padding: 40px 0; border-top: 1px solid var(--line); color: var(--muted); }
+
+/* Reduced motion: no pinned scroll; hero becomes normal flow with all beats visible. */
+@media (prefers-reduced-motion: reduce) {
+  .seq { height: auto; }
+  .seq__pin { position: relative; height: auto; min-height: 100svh; padding-top: 96px; }
+  .seq__copy { position: relative; padding-top: 32px; }
+  .beats { height: auto; }
+  .beat { position: static; opacity: 1 !important; transform: none !important; margin-bottom: 28px; }
+  .seq__poster { display: none; }
+  .seq__canvas { opacity: .55; }
+}
